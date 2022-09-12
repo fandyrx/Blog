@@ -1,0 +1,253 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>JS基础 | 前端笔记</title>
+<link rel="shortcut icon" href="https://fandyrx.github.io/blog//favicon.ico?v=1662996101356">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://fandyrx.github.io/blog//styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="JS基础 | 前端笔记 - Atom Feed" href="https://fandyrx.github.io/blog//atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+
+    <meta name="description" content="obj.style[attr]
+为什么需要写成obj.style[attr]，而不能写成obj.style.attr?
+因为传入的 attr = 'width' ,是带引号的，
+即 obj.style.width === obj.style..." />
+    <meta name="keywords" content="JS基础" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://fandyrx.github.io/blog/">
+  <img class="avatar" src="https://fandyrx.github.io/blog//images/avatar.png?v=1662996101356" alt="">
+  </a>
+  <h1 class="site-title">
+    前端笔记
+  </h1>
+  <p class="site-description">
+    温故而知新
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/about" class="menu">
+          关于
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          JS
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              JS基础
+            </h2>
+            <div class="post-info">
+              <span>
+                2022-09-12
+              </span>
+              <span>
+                3 min read
+              </span>
+              
+                <a href="https://fandyrx.github.io/blog/tag/AB71agQk6/" class="post-tag">
+                  # JS基础
+                </a>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content">
+                <p>obj.style[attr]<br>
+为什么需要写成obj.style[attr]，而不能写成obj.style.attr?<br>
+因为传入的 attr = 'width' ,是带引号的，<br>
+即 obj.style.width === obj.style['width']；</p>
+<p>1.获取DOM元素  element<br>
+classList<br>
+elment .classList    属性返回元素的类名，作为 DOMTokenList 对象。<br>
+用于在元素中添加，移除及切换 CSS 类。<br>
+classList 属性是只读的，但你可以使用 add() 和 remove() 方法修改它。</p>
+<ol start="2">
+<li>element.getAttribute('想获取的属性')<br>
+element.setAttribute('设置的类名',值)   值为空则等同remove 掉</li>
+</ol>
+<p>合并时, concat () 好像不大好用,  将   拼接好(新添加和旧存在 )的类名  setAttribute 覆盖掉CLASS就可以.</p>
+<p>下拉框例子<br>
+let spans = document.querySelectorAll('.menuSpan')<br>
+//默认打开 第一个,存储打开的菜单<br>
+let openDiv = spans[0].parentNode</p>
+<pre><code>   for (let i =0;i &lt; spans.length ; i++){
+    spans[i].onclick = function() {
+        let parentDiv =  this.parentNode;
+        let begin = parentDiv.offsetHeight 
+</code></pre>
+<p>classValue = parentDiv.getAttribute('class')<br>
+// //1.getAttribute() 获取属性, setAttribute修改/删除属性   replace替换<br>
+//   if(parentDiv.getAttribute('class')){<br>
+//     if(parentDiv.getAttribute('class').indexOf('collapsed') !== -1){<br>
+//        newClass = classValue.replace('collapsed','')<br>
+//        parentDiv.setAttribute(&quot;class&quot;, newClass)</p>
+<pre><code>      //       //打开时,关闭前一个 并存储当前菜单元素
+      //       if( openDiv != parentDiv ){
+      //         openDiv.setAttribute(&quot;class&quot;,'collapsed')
+      //       }
+      //       //更新打开的span
+      //       openDiv = parentDiv  
+</code></pre>
+<p>3.封装 获取任意css 样式</p>
+<p>//获取任意css 样式<br>
+function getStyle(obj,name) {</p>
+<p>// 获取样式<br>
+if(window.getComputedStyle){<br>
+return getComputedStyle(obj,null)[name];<br>
+}else{<br>
+// ie8<br>
+return obj.currentStyle[name];<br>
+}<br>
+}</p>
+<p>4.封装  移动JS动画   利用定时器,<br>
+//对象,属性(left ,top with ,height),target(目标数值),speed,回调<br>
+function move(obj,attr,target,speed,callback) {<br>
+//关闭上一个定时器<br>
+clearInterval(obj.timer)<br>
+//元素当前距离父元素左边距离  let current = obj.offsetLeft   动态获取,对象的某个属性<br>
+// let current = obj.offsetLeft<br>
+let current = parseInt(getStyle(obj,attr))<br>
+//用户传入一个正的数值,内部根据当前位置,判断应该+或-<br>
+//如果当前距离   &gt;  目标距离   移动speed 取反,  例子:800 向 0移动    小于时,0 向 800 speed 为正<br>
+if(current &gt; target){<br>
+speed = - speed;<br>
+}<br>
+//通过定时器做动画效果  : 定位的 Left 改变<br>
+obj.timer = setInterval(() =&gt; {<br>
+// let oldValue = obj.offsetLeft<br>
+//  这个方法是因为 getStyle 自己封装方法,获取的带有PX ,需要parseInt转换为数字才能计算<br>
+let oldValue = parseInt(getStyle(obj,attr))</p>
+<pre><code>  //旧值 加上 speed 为每次移动的距离   即为当前最新值,动态赋予left即可移动
+  let newValue = oldValue + speed;
+  //向左移动 newValue 比目标 小 ?
+  //向右移动,判断是否比target大  
+  //newValue 小于 目标值 ,则让new 等于目标的位置 ,防止超过/不停止
+  if((speed &lt; 0 &amp;&amp; newValue &lt; target) || (speed &gt;0 &amp;&amp; newValue &gt; target)){
+    newValue = target
+  }
+
+  obj.style[attr] = newValue + &quot;px&quot;;
+
+  //到达目标清除计时器,停止动画
+  if(newValue == target) {
+    clearInterval(obj.timer);
+    callback &amp;&amp; callback();
+
+  } 
+</code></pre>
+<p>}, 30);</p>
+<p>}</p>
+
+              </div>
+              <div class="toc-container">
+                
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+
+        
+
+        <div class="site-footer">
+  Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a>
+  <a class="rss" href="https://fandyrx.github.io/blog//atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>

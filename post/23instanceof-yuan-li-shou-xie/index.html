@@ -2,23 +2,19 @@
   <head>
     <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>关于 | 前端笔记</title>
+<title>23.instanceof 原理手写 | 前端笔记</title>
 <link rel="shortcut icon" href="https://fandyrx.github.io/blog//favicon.ico?v=1662996101356">
 <link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
 <link rel="stylesheet" href="https://fandyrx.github.io/blog//styles/main.css">
-<link rel="alternate" type="application/atom+xml" title="关于 | 前端笔记 - Atom Feed" href="https://fandyrx.github.io/blog//atom.xml">
+<link rel="alternate" type="application/atom+xml" title="23.instanceof 原理手写 | 前端笔记 - Atom Feed" href="https://fandyrx.github.io/blog//atom.xml">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
 
 
 
-    <meta name="description" content="
-欢迎来到我的小站呀，很高兴遇见你！🤝
-
-🏠 关于本站
-👨‍💻 博主是谁
-⛹ 兴趣爱好
-📬 联系我呀
-..." />
+    <meta name="description" content="原理: 原型链中,构造函数的显式原型prototype指向 ,  和该实例对象的隐式原型__propto__指向 一致,两者指向同一个原型对象
+  // 1.构造函数
+function Person (name){
+  this.name ..." />
     <meta name="keywords" content="" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
     <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
@@ -87,11 +83,11 @@
         <div class="post-detail">
           <article class="post">
             <h2 class="post-title">
-              关于
+              23.instanceof 原理手写
             </h2>
             <div class="post-info">
               <span>
-                2019-01-25
+                2022-09-12
               </span>
               <span>
                 1 min read
@@ -101,32 +97,62 @@
             
             <div class="post-content-wrapper">
               <div class="post-content">
-                <blockquote>
-<p>欢迎来到我的小站呀，很高兴遇见你！🤝</p>
-</blockquote>
-<h2 id="关于本站">🏠 关于本站</h2>
-<h2 id="博主是谁">👨‍💻 博主是谁</h2>
-<h2 id="兴趣爱好">⛹ 兴趣爱好</h2>
-<h2 id="联系我呀">📬 联系我呀</h2>
+                <p>原理: 原型链中,构造函数的显式原型prototype指向 ,  和该实例对象的隐式原型__propto__指向 一致,两者指向同一个原型对象</p>
+<pre><code>  // 1.构造函数
+function Person (name){
+  this.name = name
+}
+
+//2.实例 
+ let obj = new Person('张三')
+//检验 
+ console.log(Object.getPrototypeOf(obj),'实例对象的原型(隐式原型)');
+ console.log(obj.prototype,'实例对象的原型/查找不到');
+ console.log(Person.prototype,'构造函数的原型');
+
+ console.log(obj instanceof Person,'实例是否Person构造函数的类');
+
+  console.log(instance(obj,Person),'手写');
+
+ //3.手写  复现instanceof
+  //参数意义: left 实例   right 构造函数
+ function instance(left,right){
+  //获取  实例对象 的隐式原型
+    let proto = Object.getPrototypeOf(left)
+  //获取  构造函数的 显式原型
+    let prototype = right.prototype
+
+   
+      if(!proto){
+        //基础数据类型没有原型
+        return  false
+      }
+      if(proto === prototype){
+        return true
+      }
+      //如果第一层没找到,继续在原型链上找
+      proto = Object.getPrototypeOf(proto)
+    
+ }
+</code></pre>
 
               </div>
               <div class="toc-container">
-                <ul class="markdownIt-TOC">
-<li>
-<ul>
-<li><a href="#%E5%85%B3%E4%BA%8E%E6%9C%AC%E7%AB%99">🏠 关于本站</a></li>
-<li><a href="#%E5%8D%9A%E4%B8%BB%E6%98%AF%E8%B0%81">👨‍💻 博主是谁</a></li>
-<li><a href="#%E5%85%B4%E8%B6%A3%E7%88%B1%E5%A5%BD">⛹ 兴趣爱好</a></li>
-<li><a href="#%E8%81%94%E7%B3%BB%E6%88%91%E5%91%80">📬 联系我呀</a></li>
-</ul>
-</li>
-</ul>
-
+                
               </div>
             </div>
           </article>
         </div>
 
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://fandyrx.github.io/blog/post/shu-zu-fang-fa-slicesplicereversesort/">
+              <h3 class="post-title">
+                数组方法:slice,splice,reverse,sort
+              </h3>
+            </a>
+          </div>
         
 
         
